@@ -1,7 +1,6 @@
 import socket
 import sys
 import time
-import random
 
 #docs:
 # http://www.limitlessled.com/dev/
@@ -9,9 +8,9 @@ import random
 host = "10.10.10.255" #broadcast ip for my subnet
 port = 8899
 
-#        all 1   2   3   4
-group = [66, 69, 71, 73, 75]
-
+#            all 1   2   3   4
+group_on  = [66, 69, 71, 73, 75]
+group_off = [65, 70, 72, 74, 76]
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect((host, port))
@@ -26,12 +25,16 @@ def main():
     else:
         g = int(sys.argv[1])
         command = sys.argv[2]
-        value = int(sys.argv[3])
+        
         if 0 <= g <= 4:
             if command == 'color':
-                color(group[g], value)
+                color(group_on[g], int(sys.argv[3]))
             if command == 'brightness':
-                brightness(group[g], value)
+                brightness(group_on[g], int(sys.argv[3]))
+            if command == 'on':
+                s.send(bytearray([group_on[g],0]))                
+            if command == 'off':
+                s.send(bytearray([group_off[g],0]))
         else:
             print("group must be 0-4 (0 send command to all)")
 
